@@ -1,0 +1,6 @@
+{
+  "name": "AutoCare Garage Management System",
+  "description": "Professional automotive workshop management platform for single-garage operations with Admin and Garagiste roles, appointments, client vehicles, repairs, parts stock, invoices, and payments.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
