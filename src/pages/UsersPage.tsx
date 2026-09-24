@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { User } from '../types';
+import { User, getUserDisplayName } from '../types';
 import { Plus, Search, ShieldCheck, Shield, Phone, Mail, Edit2, CheckCircle2, XCircle } from 'lucide-react';
 import { UserFormModal } from '../components/users/UserFormModal';
 import { formatDate } from '../utils/formatters';
@@ -21,12 +21,14 @@ export const UsersPage: React.FC<UsersPageProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const filteredUsers = users.filter((u) => {
-    const term = searchTerm.toLowerCase();
-    return (
-      u.name.toLowerCase().includes(term) ||
-      u.email.toLowerCase().includes(term) ||
-      (u.phone && u.phone.toLowerCase().includes(term))
-    );
+    const term = searchTerm.trim().toLowerCase();
+    if (!term) return true;
+
+    const fullName = getUserDisplayName(u).toLowerCase();
+    const email = (u.email || '').toLowerCase();
+    const phone = (u.phone || '').toLowerCase();
+
+    return fullName.includes(term) || email.includes(term) || phone.includes(term);
   });
 
   const handleOpenAdd = () => {
@@ -97,17 +99,17 @@ export const UsersPage: React.FC<UsersPageProps> = ({
                   {user.avatar_url ? (
                     <img
                       src={user.avatar_url}
-                      alt={user.name}
+                      alt={getUserDisplayName(user)}
                       className="w-10 h-10 rounded-full object-cover border border-slate-700"
                       referrerPolicy="no-referrer"
                     />
                   ) : (
                     <div className="w-10 h-10 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center font-bold text-amber-400">
-                      {user.name.charAt(0)}
+                      {getUserDisplayName(user).charAt(0) || 'U'}
                     </div>
                   )}
                   <div>
-                    <h4 className="text-sm font-bold text-white">{user.name}</h4>
+                    <h4 className="text-sm font-bold text-white">{getUserDisplayName(user)}</h4>
                     <span
                       className={`inline-flex items-center gap-1 text-[10px] font-mono font-semibold uppercase px-2 py-0.2 rounded border mt-0.5 ${
                         user.role === 'ADMIN'

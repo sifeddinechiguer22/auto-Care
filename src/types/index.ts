@@ -2,14 +2,51 @@ export type Role = 'ADMIN' | 'GARAGISTE';
 
 export interface User {
   id: string;
-  name: string;
+  name?: string;
+  first_name?: string;
+  last_name?: string;
   email: string;
   role: Role;
   is_active: boolean;
   phone?: string;
   avatar_url?: string;
-  created_at: string;
+  created_at?: string;
+  updated_at?: string;
 }
+
+export const getUserDisplayName = (user?: Partial<User> | null): string => {
+  if (!user) return 'Utilisateur';
+
+  const directName = user.name?.trim();
+  if (directName) return directName;
+
+  const fullName = [user.first_name, user.last_name].filter(Boolean).join(' ').trim();
+  if (fullName) return fullName;
+
+  return user.email?.split('@')[0]?.trim() || 'Utilisateur';
+};
+
+export const normalizeUser = <T extends Partial<User>>(user?: T | null): (T & { name: string }) | null => {
+  if (!user) return null;
+
+  return {
+    ...user,
+    name: getUserDisplayName(user),
+  } as T & { name: string };
+};
+
+export const splitUserName = (fullName?: string): { first_name: string; last_name: string } => {
+  const normalized = (fullName || '').trim();
+  if (!normalized) {
+    return { first_name: '', last_name: '' };
+  }
+
+  const parts = normalized.split(/\s+/);
+  const first_name = parts.shift() || '';
+  const last_name = parts.join(' ');
+
+  return { first_name, last_name };
+};
 
 export interface AuthResponse {
   access_token: string;
@@ -24,7 +61,7 @@ export interface Client {
   last_name: string;
   email: string;
   phone: string;
-  address: string;
+  address?: string;
   notes?: string;
   created_at: string;
 }
@@ -34,13 +71,13 @@ export type FuelType = 'DIESEL' | 'GASOLINE' | 'ELECTRIC' | 'HYBRID' | 'LPG';
 export interface Vehicle {
   id: string;
   client_id: string;
-  registration_number: string; // License plate
+  registration_number?: string; // License plate
   brand: string;
   model: string;
   year: number;
   mileage: number;
   fuel_type: FuelType;
-  vin: string;
+  vin?: string;
   owner_name?: string;
   notes?: string;
   created_at: string;
@@ -147,7 +184,14 @@ export interface Part {
   movements?: StockMovement[];
 }
 
-export type InvoiceStatus = 'PENDING' | 'PAID' | 'PARTIAL' | 'OVERDUE' | 'CANCELLED';
+export type InvoiceStatus =
+  | 'UNPAID'
+  | 'PARTIALLY_PAID'
+  | 'PAID'
+  | 'CANCELLED'
+  | 'PENDING'
+  | 'PARTIAL'
+  | 'OVERDUE';
 
 export interface InvoiceItem {
   id: string;
@@ -179,7 +223,7 @@ export interface Invoice {
   created_at: string;
 }
 
-export type PaymentMethod = 'CASH' | 'CREDIT_CARD' | 'BANK_TRANSFER' | 'CHECK';
+export type PaymentMethod = 'CASH' | 'CARD' | 'CREDIT_CARD' | 'BANK_TRANSFER';
 
 export interface Payment {
   id: string;

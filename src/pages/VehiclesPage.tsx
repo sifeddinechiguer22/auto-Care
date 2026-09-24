@@ -43,12 +43,15 @@ export const VehiclesPage: React.FC<VehiclesPageProps> = ({
 
   const filteredVehicles = vehicles.filter((v) => {
     const term = searchTerm.toLowerCase();
+    const registration = (v.registration_number ?? '').toLowerCase();
+    const vin = (v.vin ?? '').toLowerCase();
+    const owner = (v.owner_name ?? '').toLowerCase();
     const matchSearch =
-      v.registration_number.toLowerCase().includes(term) ||
+      registration.includes(term) ||
       v.brand.toLowerCase().includes(term) ||
       v.model.toLowerCase().includes(term) ||
-      v.vin.toLowerCase().includes(term) ||
-      (v.owner_name && v.owner_name.toLowerCase().includes(term));
+      vin.includes(term) ||
+      owner.includes(term);
 
     const matchFuel = fuelFilter === 'ALL' || v.fuel_type === fuelFilter;
 
@@ -181,7 +184,7 @@ export const VehiclesPage: React.FC<VehiclesPageProps> = ({
                     <tr key={vehicle.id} className="hover:bg-slate-850/60 transition-colors">
                       <td className="py-3 px-4 whitespace-nowrap">
                         <span className="font-mono text-amber-400 font-bold bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20 text-xs">
-                          {vehicle.registration_number}
+                          {vehicle.registration_number || '—'}
                         </span>
                       </td>
 
@@ -212,7 +215,7 @@ export const VehiclesPage: React.FC<VehiclesPageProps> = ({
                       </td>
 
                       <td className="py-3 px-4 whitespace-nowrap font-mono text-slate-400 text-[11px]">
-                        {vehicle.vin}
+                        {vehicle.vin || '—'}
                       </td>
 
                       <td className="py-3 px-4 whitespace-nowrap text-right">

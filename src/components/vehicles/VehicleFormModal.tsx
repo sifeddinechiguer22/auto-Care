@@ -22,36 +22,27 @@ export const VehicleFormModal: React.FC<VehicleFormModalProps> = ({
   isLoading = false,
 }) => {
   const [clientId, setClientId] = useState('');
-  const [registrationNumber, setRegistrationNumber] = useState('');
   const [brand, setBrand] = useState('');
   const [model, setModel] = useState('');
   const [year, setYear] = useState<number>(new Date().getFullYear());
   const [mileage, setMileage] = useState<number>(0);
   const [fuelType, setFuelType] = useState<FuelType>('GASOLINE');
-  const [vin, setVin] = useState('');
-  const [notes, setNotes] = useState('');
 
   useEffect(() => {
     if (vehicle) {
       setClientId(vehicle.client_id);
-      setRegistrationNumber(vehicle.registration_number);
       setBrand(vehicle.brand);
       setModel(vehicle.model);
       setYear(vehicle.year);
       setMileage(vehicle.mileage);
       setFuelType(vehicle.fuel_type);
-      setVin(vehicle.vin);
-      setNotes(vehicle.notes || '');
     } else {
       setClientId(initialClientId || (clients[0]?.id || ''));
-      setRegistrationNumber('');
       setBrand('');
       setModel('');
       setYear(new Date().getFullYear());
       setMileage(0);
       setFuelType('GASOLINE');
-      setVin('');
-      setNotes('');
     }
   }, [vehicle, initialClientId, clients, isOpen]);
 
@@ -59,14 +50,11 @@ export const VehicleFormModal: React.FC<VehicleFormModalProps> = ({
     e.preventDefault();
     await onSubmit({
       client_id: clientId,
-      registration_number: registrationNumber.toUpperCase().trim(),
       brand: brand.trim(),
       model: model.trim(),
       year: Number(year),
       mileage: Number(mileage),
       fuel_type: fuelType,
-      vin: vin.toUpperCase().trim(),
-      notes: notes.trim(),
     });
   };
 
@@ -99,36 +87,6 @@ export const VehicleFormModal: React.FC<VehicleFormModalProps> = ({
               </option>
             ))}
           </select>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-xs font-medium text-slate-300 mb-1">
-              Immatriculation <span className="text-amber-400">*</span>
-            </label>
-            <input
-              type="text"
-              required
-              value={registrationNumber}
-              onChange={(e) => setRegistrationNumber(e.target.value)}
-              placeholder="ex. AA-123-BB"
-              className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-sm text-white font-mono uppercase focus:outline-none focus:border-amber-500"
-            />
-          </div>
-
-          <div>
-            <label className="block text-xs font-medium text-slate-300 mb-1">
-              Numéro VIN (Châssis) <span className="text-amber-400">*</span>
-            </label>
-            <input
-              type="text"
-              required
-              value={vin}
-              onChange={(e) => setVin(e.target.value)}
-              placeholder="Numéro VIN 17 caractères ex. VF1..."
-              className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-sm text-white font-mono uppercase focus:outline-none focus:border-amber-500"
-            />
-          </div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -207,19 +165,6 @@ export const VehicleFormModal: React.FC<VehicleFormModalProps> = ({
               <option value="LPG">GPL</option>
             </select>
           </div>
-        </div>
-
-        <div>
-          <label className="block text-xs font-medium text-slate-300 mb-1">
-            Notes Techniques Véhicule (Huile recommandée, dimensions pneus, etc.)
-          </label>
-          <textarea
-            rows={2}
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
-            placeholder="ex. Huile 5W-30 norme RN0720, monte pneumatique 205/55 R16..."
-            className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-sm text-white placeholder-slate-500 focus:outline-none focus:border-amber-500"
-          />
         </div>
 
         <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-800">

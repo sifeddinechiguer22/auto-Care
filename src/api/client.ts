@@ -57,13 +57,15 @@ class ApiClient {
   }
 
   isDemoMode(): boolean {
-    const val = localStorage.getItem(DEMO_MODE_KEY);
-    // If not set, default to true in preview environment to ensure first-time reviewers can test UI
-    return val === null ? true : val === 'true';
+    return false;
   }
 
   setDemoMode(enabled: boolean) {
-    localStorage.setItem(DEMO_MODE_KEY, String(enabled));
+    if (enabled) {
+      localStorage.setItem(DEMO_MODE_KEY, 'false');
+    } else {
+      localStorage.setItem(DEMO_MODE_KEY, 'false');
+    }
   }
 
   async request<T>(endpoint: string, options: ApiRequestOptions = {}): Promise<T> {
@@ -93,14 +95,6 @@ class ApiClient {
       }
     }
 
-    // If Demo Mode is explicitly enabled by the user or localStorage
-    if (this.isDemoMode()) {
-      // In demo mode, execute local persistent storage simulation
-      return await import('./mockStorage').then((m) =>
-        m.handleMockRequest<T>(endpoint, options)
-      );
-    }
-
     try {
       const response = await fetch(url, {
         ...options,
@@ -127,15 +121,11 @@ class ApiClient {
 
       return (await response.json()) as T;
     } catch (err: any) {
-      // If network fails (e.g. backend server at 127.0.0.1:8000 is not running),
-      // we gracefully fall back to local storage and alert the user so they can continue testing.
       if (err.name === 'TypeError' || err.message?.includes('Failed to fetch')) {
-        console.warn(
-          `[AutoCare API] FastAPI backend at ${this.baseUrl} is currently unreachable. Seamlessly activating demo repository for preview mode.`
-        );
-        this.setDemoMode(true);
-        return await import('./mockStorage').then((m) =>
-          m.handleMockRequest<T>(endpoint, options)
+        throw new ApiError(
+          `Impossible de joindre le backend AutoCare sur ${this.baseUrl}. Vérifiez que le serveur FastAPI est lancé.`,
+          503,
+          { detail: err.message }
         );
       }
       throw err;

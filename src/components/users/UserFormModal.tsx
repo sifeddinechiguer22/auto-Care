@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { User, Role } from '../../types';
+import { User, Role, getUserDisplayName } from '../../types';
 import { Modal } from '../common/Modal';
 
 interface UserFormModalProps {
@@ -25,7 +25,7 @@ export const UserFormModal: React.FC<UserFormModalProps> = ({
 
   useEffect(() => {
     if (user) {
-      setName(user.name);
+      setName(getUserDisplayName(user));
       setEmail(user.email);
       setPhone(user.phone || '');
       setRole(user.role);
@@ -102,19 +102,30 @@ export const UserFormModal: React.FC<UserFormModalProps> = ({
         </div>
 
         <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-xs font-medium text-slate-300 mb-1">
-              Rôle / Habilitation <span className="text-amber-400">*</span>
-            </label>
-            <select
-              value={role}
-              onChange={(e) => setRole(e.target.value as Role)}
-              className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-sm text-white focus:outline-none focus:border-amber-500"
-            >
-              <option value="GARAGISTE">Garagiste (Mécanicien / Employé)</option>
-              <option value="ADMIN">Administrateur (Propriétaire Garage)</option>
-            </select>
-          </div>
+          {!user ? (
+            <div className="col-span-1">
+              <label className="block text-xs font-medium text-slate-300 mb-1">
+                Rôle / Habilitation
+              </label>
+              <div className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-sm text-slate-300">
+                Garagiste (Mécanicien / Employé)
+              </div>
+            </div>
+          ) : (
+            <div>
+              <label className="block text-xs font-medium text-slate-300 mb-1">
+                Rôle / Habilitation <span className="text-amber-400">*</span>
+              </label>
+              <select
+                value={role}
+                onChange={(e) => setRole(e.target.value as Role)}
+                className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-sm text-white focus:outline-none focus:border-amber-500"
+              >
+                <option value="GARAGISTE">Garagiste (Mécanicien / Employé)</option>
+                <option value="ADMIN">Administrateur (Propriétaire Garage)</option>
+              </select>
+            </div>
+          )}
 
           <div>
             <label className="block text-xs font-medium text-slate-300 mb-1">

@@ -21,8 +21,6 @@ export const ClientFormModal: React.FC<ClientFormModalProps> = ({
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
-  const [address, setAddress] = useState('');
-  const [notes, setNotes] = useState('');
 
   useEffect(() => {
     if (client) {
@@ -30,15 +28,11 @@ export const ClientFormModal: React.FC<ClientFormModalProps> = ({
       setLastName(client.last_name);
       setEmail(client.email);
       setPhone(client.phone);
-      setAddress(client.address);
-      setNotes(client.notes || '');
     } else {
       setFirstName('');
       setLastName('');
       setEmail('');
       setPhone('');
-      setAddress('');
-      setNotes('');
     }
   }, [client, isOpen]);
 
@@ -49,8 +43,6 @@ export const ClientFormModal: React.FC<ClientFormModalProps> = ({
       last_name: lastName.trim(),
       email: email.trim(),
       phone: phone.trim(),
-      address: address.trim(),
-      notes: notes.trim(),
     });
   };
 
@@ -120,32 +112,6 @@ export const ClientFormModal: React.FC<ClientFormModalProps> = ({
               className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-sm text-white placeholder-slate-500 focus:outline-none focus:border-amber-500"
             />
           </div>
-        </div>
-
-        <div>
-          <label className="block text-xs font-medium text-slate-300 mb-1">
-            Adresse Postale / Facturation
-          </label>
-          <input
-            type="text"
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
-            placeholder="Numéro, rue, Code Postal, Ville"
-            className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-sm text-white placeholder-slate-500 focus:outline-none focus:border-amber-500"
-          />
-        </div>
-
-        <div>
-          <label className="block text-xs font-medium text-slate-300 mb-1">
-            Notes Internes Atelier
-          </label>
-          <textarea
-            rows={2}
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
-            placeholder="Dépôt des clés, préférences de marque de pièces, consignes spécifiques..."
-            className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-sm text-white placeholder-slate-500 focus:outline-none focus:border-amber-500"
-          />
         </div>
 
         <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-800">

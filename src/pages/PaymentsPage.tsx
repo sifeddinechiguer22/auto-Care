@@ -116,10 +116,9 @@ export const PaymentsPage: React.FC<PaymentsPageProps> = ({
               className="px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-300 focus:outline-none focus:border-amber-500"
             >
               <option value="ALL">Tous les modes de règlement</option>
-              <option value="CREDIT_CARD">Carte Bancaire (TPE)</option>
+              <option value="CARD">Carte Bancaire (TPE)</option>
               <option value="CASH">Espèces</option>
               <option value="BANK_TRANSFER">Virement Bancaire</option>
-              <option value="CHECK">Chèque</option>
             </select>
           </div>
         </div>

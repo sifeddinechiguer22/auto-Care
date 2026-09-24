@@ -118,7 +118,7 @@ export function getRepairStatusBadge(status: RepairStatus): {
   }
 }
 
-export function getInvoiceStatusBadge(status: InvoiceStatus): {
+export function getInvoiceStatusBadge(status: InvoiceStatus | string | null | undefined): {
   label: string;
   className: string;
 } {
@@ -128,11 +128,13 @@ export function getInvoiceStatusBadge(status: InvoiceStatus): {
         label: 'Payée',
         className: 'text-emerald-400 bg-emerald-500/10 border border-emerald-500/20',
       };
+    case 'UNPAID':
     case 'PENDING':
       return {
         label: 'En attente',
         className: 'text-amber-400 bg-amber-500/10 border border-amber-500/20',
       };
+    case 'PARTIALLY_PAID':
     case 'PARTIAL':
       return {
         label: 'Partiellement payée',
@@ -148,6 +150,11 @@ export function getInvoiceStatusBadge(status: InvoiceStatus): {
         label: 'Annulée',
         className: 'text-slate-400 bg-slate-500/10 border border-slate-500/20',
       };
+    default:
+      return {
+        label: 'En attente',
+        className: 'text-amber-400 bg-amber-500/10 border border-amber-500/20',
+      };
   }
 }
 
@@ -156,9 +163,10 @@ export function getPaymentMethodBadge(method: PaymentMethod): {
   className: string;
 } {
   switch (method) {
+    case 'CARD':
     case 'CREDIT_CARD':
       return {
-        label: 'Carte Bancaire',
+        label: 'Carte Bancaire (TPE)',
         className: 'text-blue-400 bg-blue-500/10 border border-blue-500/20',
       };
     case 'CASH':
@@ -171,10 +179,10 @@ export function getPaymentMethodBadge(method: PaymentMethod): {
         label: 'Virement Bancaire',
         className: 'text-purple-400 bg-purple-500/10 border border-purple-500/20',
       };
-    case 'CHECK':
+    default:
       return {
-        label: 'Chèque',
-        className: 'text-amber-400 bg-amber-500/10 border border-amber-500/20',
+        label: 'Autre',
+        className: 'text-slate-400 bg-slate-500/10 border border-slate-500/20',
       };
   }
 }

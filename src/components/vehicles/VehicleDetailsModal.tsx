@@ -35,7 +35,7 @@ export const VehicleDetailsModal: React.FC<VehicleDetailsModalProps> = ({
       isOpen={isOpen}
       onClose={onClose}
       title={`${vehicle.brand} ${vehicle.model} (${vehicle.year})`}
-      subtitle={`Immatriculation : ${vehicle.registration_number}`}
+      subtitle={`Immatriculation : ${vehicle.registration_number || '—'}`}
       maxWidth="2xl"
     >
       <div className="space-y-6">
@@ -47,7 +47,7 @@ export const VehicleDetailsModal: React.FC<VehicleDetailsModalProps> = ({
               Immatriculation
             </span>
             <span className="text-sm font-bold text-amber-400 font-mono">
-              {vehicle.registration_number}
+              {vehicle.registration_number || '—'}
             </span>
           </div>
 
@@ -85,7 +85,7 @@ export const VehicleDetailsModal: React.FC<VehicleDetailsModalProps> = ({
           <div className="flex items-center justify-between">
             <span className="text-slate-400">Numéro VIN (Châssis) :</span>
             <span className="font-mono text-slate-200 tracking-wider font-semibold">
-              {vehicle.vin}
+              {vehicle.vin || '—'}
             </span>
           </div>
           {vehicle.notes && (

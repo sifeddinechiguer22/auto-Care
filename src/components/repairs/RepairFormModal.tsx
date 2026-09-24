@@ -75,20 +75,28 @@ export const RepairFormModal: React.FC<RepairFormModalProps> = ({
       setLaborHours(repair.labor_hours || 1.5);
       setLaborRate(repair.labor_rate || 90);
       setNotes(repair.notes || '');
-    } else {
-      const defaultVeh = initialVehicleId || vehicles[0]?.id || '';
-      setVehicleId(defaultVeh);
-      const targetVeh = vehicles.find((v) => v.id === defaultVeh);
-      setClientId(targetVeh?.client_id || clients[0]?.id || '');
-      setMechanicId(mechanics[0]?.id || '');
-      setDiagnosis('');
-      setStatus('DIAGNOSIS');
-      setServices([]);
-      setParts([]);
-      setLaborHours(1.5);
-      setLaborRate(90);
-      setNotes('');
+      return;
     }
+
+    if (!isOpen) return;
+
+    const defaultVeh = initialVehicleId || vehicles[0]?.id || '';
+    setVehicleId(defaultVeh);
+    const targetVeh = vehicles.find((v) => v.id === defaultVeh);
+    setClientId(targetVeh?.client_id || clients[0]?.id || '');
+    setMechanicId((current) => {
+      if (current && mechanics.some((m) => m.id === current)) {
+        return current;
+      }
+      return mechanics[0]?.id || '';
+    });
+    setDiagnosis('');
+    setStatus('DIAGNOSIS');
+    setServices([]);
+    setParts([]);
+    setLaborHours(1.5);
+    setLaborRate(90);
+    setNotes('');
   }, [repair, initialVehicleId, vehicles, clients, mechanics, isOpen]);
 
   // Add Service from Catalog

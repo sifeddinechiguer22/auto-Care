@@ -44,11 +44,14 @@ export const ClientsPage: React.FC<ClientsPageProps> = ({
   const filteredClients = clients.filter((c) => {
     const term = searchTerm.toLowerCase();
     const fullName = `${c.first_name} ${c.last_name}`.toLowerCase();
+    const email = (c.email ?? '').toLowerCase();
+    const phone = (c.phone ?? '').toLowerCase();
+    const address = (c.address ?? '').toLowerCase();
     return (
       fullName.includes(term) ||
-      c.email.toLowerCase().includes(term) ||
-      c.phone.toLowerCase().includes(term) ||
-      c.address.toLowerCase().includes(term)
+      email.includes(term) ||
+      phone.includes(term) ||
+      address.includes(term)
     );
   });
 

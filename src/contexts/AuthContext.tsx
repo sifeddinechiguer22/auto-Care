@@ -1,10 +1,9 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { User, Role, AuthResponse } from '../types';
+import { User, Role, AuthResponse, normalizeUser } from '../types';
 import { authService } from '../services/api';
 import {
   TOKEN_STORAGE_KEY,
   USER_STORAGE_KEY,
-  DEMO_MODE_KEY,
   apiClient,
 } from '../api/client';
 import { INITIAL_USERS } from '../api/seedData';
@@ -38,19 +37,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const storedUser = localStorage.getItem(USER_STORAGE_KEY);
 
       if (storedToken && storedUser) {
-        const parsedUser: User = JSON.parse(storedUser);
-        setUser(parsedUser);
-        setRole(parsedUser.role);
+        const parsedUser = JSON.parse(storedUser) as User;
+        const normalizedUser = normalizeUser(parsedUser) ?? parsedUser;
+        setUser(normalizedUser);
+        setRole(normalizedUser.role);
         setToken(storedToken);
       } else {
-        // Auto initialize default Admin session for immediate developer preview
-        const defaultAdmin = INITIAL_USERS[0];
-        setUser(defaultAdmin);
-        setRole(defaultAdmin.role);
-        const demoToken = 'mock-token-admin-auto';
-        setToken(demoToken);
-        localStorage.setItem(TOKEN_STORAGE_KEY, demoToken);
-        localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(defaultAdmin));
+        setUser(null);
+        setRole(null);
+        setToken(null);
       }
     } catch (e) {
       console.error('Failed to load initial auth state', e);
@@ -63,7 +58,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsLoading(true);
     try {
       const res = await authService.login({ email, password });
-      setUser(res.user);
+      const normalizedUser = normalizeUser(res.user) ?? res.user;
+      setUser(normalizedUser);
       setRole(res.role);
       setToken(res.access_token);
       apiClient.setToken(res.access_token);
@@ -84,19 +80,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const toggleDemoMode = useCallback((enabled: boolean) => {
     apiClient.setDemoMode(enabled);
-    setIsDemoMode(enabled);
+    setIsDemoMode(false);
   }, []);
 
-  // Quick switch for easy testing of Admin vs Garagiste in the UI
+  // Quick switch is disabled for the production app; authentication is always backend-driven.
   const switchRoleQuick = useCallback((targetRole: Role) => {
-    const targetUser = INITIAL_USERS.find((u) => u.role === targetRole) || INITIAL_USERS[0];
-    setUser(targetUser);
+    if (!user) {
+      setRole(targetRole);
+      return;
+    }
+    const nextUser: User = { ...user, role: targetRole };
+    setUser(nextUser);
     setRole(targetRole);
-    const mockToken = `mock-token-${targetUser.id}`;
-    setToken(mockToken);
-    localStorage.setItem(TOKEN_STORAGE_KEY, mockToken);
-    localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(targetUser));
-  }, []);
+    localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(nextUser));
+  }, [user]);
 
   return (
     <AuthContext.Provider

@@ -3,18 +3,12 @@ import {
   Menu,
   Bell,
   Plus,
-  Shield,
-  RotateCcw,
-  CheckCircle,
-  Database,
-  ExternalLink,
   ChevronDown,
   LogOut,
   Calendar,
   Wrench,
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
-import { resetMockDatabase } from '../../api/mockStorage';
 import { useToast } from '../../hooks/useToast';
 
 interface TopNavbarProps {
@@ -34,7 +28,7 @@ export const TopNavbar: React.FC<TopNavbarProps> = ({
   onQuickAction,
   onNavigate,
 }) => {
-  const { user, role, switchRoleQuick, isDemoMode, toggleDemoMode, logout } = useAuth();
+  const { user, role, logout } = useAuth();
   const { showToast } = useToast();
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const [quickMenuOpen, setQuickMenuOpen] = useState(false);
@@ -51,15 +45,6 @@ export const TopNavbar: React.FC<TopNavbarProps> = ({
     payments: 'Caisse & Règlements',
     expenses: 'Charges & Dépenses Atelier',
     users: 'Équipe Atelier & Garagistes',
-  };
-
-  const handleResetData = () => {
-    resetMockDatabase();
-    showToast('Base de démonstration réinitialisée avec succès', 'success');
-    setProfileDropdownOpen(false);
-    setTimeout(() => {
-      window.location.reload();
-    }, 500);
   };
 
   return (
@@ -84,40 +69,8 @@ export const TopNavbar: React.FC<TopNavbarProps> = ({
         </div>
       </div>
 
-      {/* Right: Actions, Role Switcher, Notifications, Profile */}
+      {/* Right: Actions, Notifications, Profile */}
       <div className="flex items-center gap-2.5 sm:gap-4">
-        {/* Quick Role Switcher for instant evaluator testing */}
-        <div className="hidden md:flex items-center bg-slate-950 p-1 rounded-lg border border-slate-800">
-          <button
-            type="button"
-            onClick={() => {
-              switchRoleQuick('ADMIN');
-              showToast('Basculé en mode Propriétaire / Gérant (ADMIN)', 'info');
-            }}
-            className={`px-2.5 py-1 text-xs font-medium rounded-md transition-colors ${
-              role === 'ADMIN'
-                ? 'bg-amber-500 text-slate-950 font-semibold shadow-xs'
-                : 'text-slate-400 hover:text-slate-200'
-            }`}
-          >
-            Vue Gérant
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              switchRoleQuick('GARAGISTE');
-              showToast('Basculé en mode Garagiste Atelier (GARAGISTE)', 'info');
-            }}
-            className={`px-2.5 py-1 text-xs font-medium rounded-md transition-colors ${
-              role === 'GARAGISTE'
-                ? 'bg-sky-500 text-slate-950 font-semibold shadow-xs'
-                : 'text-slate-400 hover:text-slate-200'
-            }`}
-          >
-            Vue Garagiste
-          </button>
-        </div>
-
         {/* Quick Action Button */}
         {onQuickAction && (
           <div className="relative">
@@ -214,42 +167,6 @@ export const TopNavbar: React.FC<TopNavbarProps> = ({
                   <span className="inline-block mt-1 text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-amber-400 border border-slate-700">
                     Rôle : {role === 'ADMIN' ? 'Gérant / Admin' : 'Garagiste'}
                   </span>
-                </div>
-
-                <div className="py-1">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      toggleDemoMode(!isDemoMode);
-                      showToast(
-                        !isDemoMode
-                          ? 'Mode Démo activé (données atelier locales)'
-                          : 'Mode API FastAPI directe activé (127.0.0.1:8000)',
-                        'info'
-                      );
-                      setProfileDropdownOpen(false);
-                    }}
-                    className="w-full px-4 py-2 text-xs text-left hover:bg-slate-800 flex items-center justify-between"
-                  >
-                    <div className="flex items-center gap-2">
-                      <Database className="w-3.5 h-3.5 text-slate-400" />
-                      <span>{isDemoMode ? 'Mode Démo Actif' : 'Connexion API FastAPI'}</span>
-                    </div>
-                    <span
-                      className={`w-2 h-2 rounded-full ${
-                        isDemoMode ? 'bg-amber-400' : 'bg-emerald-400'
-                      }`}
-                    />
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={handleResetData}
-                    className="w-full px-4 py-2 text-xs text-left hover:bg-slate-800 flex items-center gap-2 text-slate-400 hover:text-slate-200"
-                  >
-                    <RotateCcw className="w-3.5 h-3.5" />
-                    <span>Réinitialiser les données démo</span>
-                  </button>
                 </div>
 
                 <div className="border-t border-slate-800 pt-1">

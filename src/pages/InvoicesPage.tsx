@@ -166,7 +166,7 @@ export const InvoicesPage: React.FC<InvoicesPageProps> = ({
                 </tr>
               ) : (
                 paginatedInvoices.map((inv) => {
-                  const badge = getInvoiceStatusBadge(inv.status);
+                  const badge = getInvoiceStatusBadge(inv.status ?? 'PENDING');
 
                   return (
                     <tr key={inv.id} className="hover:bg-slate-850/60 transition-colors">

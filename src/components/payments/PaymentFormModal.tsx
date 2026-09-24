@@ -22,7 +22,7 @@ export const PaymentFormModal: React.FC<PaymentFormModalProps> = ({
 }) => {
   const [invoiceId, setInvoiceId] = useState('');
   const [amount, setAmount] = useState<number>(0);
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('CREDIT_CARD');
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('CARD');
   const [paymentDate, setPaymentDate] = useState('');
   const [reference, setReference] = useState('');
   const [notes, setNotes] = useState('');
@@ -136,10 +136,9 @@ export const PaymentFormModal: React.FC<PaymentFormModalProps> = ({
               onChange={(e) => setPaymentMethod(e.target.value as PaymentMethod)}
               className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-sm text-white focus:outline-none focus:border-amber-500"
             >
-              <option value="CREDIT_CARD">Carte Bancaire (TPE)</option>
+              <option value="CARD">Carte Bancaire (TPE)</option>
               <option value="CASH">Espèces / Caisse</option>
               <option value="BANK_TRANSFER">Virement Bancaire</option>
-              <option value="CHECK">Chèque</option>
             </select>
           </div>
         </div>
